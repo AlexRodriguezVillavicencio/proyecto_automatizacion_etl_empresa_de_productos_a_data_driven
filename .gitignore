@@ -1,1 +1,4 @@
 pruebas.ipynb
+enviroment/
+.ipynb_checkpoints/
+__pycache__
