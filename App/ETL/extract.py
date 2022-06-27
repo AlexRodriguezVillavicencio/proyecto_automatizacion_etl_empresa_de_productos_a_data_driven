@@ -1,14 +1,13 @@
 import pandas as pd
-import os 
-import numpy as np
+from utils import sep_detected, encoding_detected
 
-from transform import transform_compra
 
-ruta = os.path.abspath('../Datasets')
+def carga_archivo(filename):
 
-def carga_archivo(filename, sep, encoding):
+    sep = sep_detected(filename)
+    encoding= encoding_detected(filename)
 
-    df = pd.read_csv(ruta+'/'+filename, sep=sep, encoding=encoding)
+    df = pd.read_csv(filename, sep=sep, encoding=encoding)
     #eliminando las columnas vacias
     column_drop = [column for column in df if df[column].isna().sum() == df.shape[0]]
     df.drop(column_drop, axis=1, inplace=True)
@@ -31,14 +30,13 @@ def carga_archivo(filename, sep, encoding):
     canal_venta = ['CODIGO','DESCRIPCION'] 
     tipo_gasto = ['IdTipoGasto', 'Descripcion', 'Monto_Aproximado']
 
-    if list(df.columns) == compra :
-        df.drop(['IdCompra'], axis=1,inplace=True)
-        print('es una tabla de compra')
-        transform_compra()
-        return df
-    elif list(df.columns) == gasto :
+    if list(df.columns) == gasto :
         df.drop(['IdGasto'], axis=1,inplace=True)
         print('es una tabla de gasto')
+        return df
+    elif list(df.columns) == compra :
+        df.drop(['IdCompra'], axis=1,inplace=True)
+        print('es una tabla de compra')
         return df
     elif list(df.columns) == localidades :
         df.drop(['id'], axis=1,inplace=True)
