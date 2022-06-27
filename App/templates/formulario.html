@@ -4,19 +4,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Automatización</title>
 </head>
 <body>
     <h1>Mi Aplicación</h1>
-    <p> Carga el archivo en formato csv y especifica el separador y el encoding</p>
+    <p> Carga el archivo en formato csv</p>
 
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="archivo">
-        <label id="sep">Sep:</label>
-        <input type="text" name="sep">
-        <label id="encoding">Encoding:</label>
-        <input type="text" name="encoding">
-        <input type="submit">
-    </form>
+    
+    <input type="file" name="" id="input_file" directory multiple webkitdirectory >
+    <button id="cargar">cargar</button>
+
+
+    <script>
+        const file = document.querySelector("#input_file");
+        var filenames = [];
+        var ficheros = null;    
+    
+        file.addEventListener('change', (e) => {
+            e.preventDefault();
+            ficheros = e.target.files;
+            for (const i of e.target.files){
+                console.log(i.webkitRelativePath);
+                filenames.push(i.webkitRelativePath)
+            }
+        })
+    
+        const enviar = document.querySelector("#cargar")
+    
+        enviar.addEventListener('click', (e) => {
+            e.preventDefault();
+            const formdata = new FormData();
+            
+            filenames.forEach((filename, index )=> {
+                formdata.append("mi_base_de_datos", ficheros[index], filename)
+            })
+            // llamada al backend
+            const requestOptions = {
+                method: 'POST',
+                body: formdata
+            }
+            fetch("http://127.0.0.1:5000/upload", requestOptions)
+            .then(res => res.json())
+            .then(result => console.log(result))
+            .catch(err => console.log(err))
+        })
+    </script>
+   
+    
 </body>
 </html>
